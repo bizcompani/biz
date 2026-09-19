@@ -4,14 +4,26 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b1220" />
     <meta name="description" content="بیز | کارگزاری تبلیغاتی — ورود کاربران و پنل مدیریت" />
-    <!-- فونت فارسی وزیرمتن -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- اتصال زودهنگام به هاست‌های حیاتی (کاهش زنجیره شبکه) -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="dns-prefetch" href="https://jajhgjqixzsemefjcbms.supabase.co" />
+    <!-- فونت فارسی وزیرمتن: غیرمسدودکننده تا رندر اول معطل نماند -->
+    <link
+      rel="preload" as="style"
+      href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
+    />
     <link
       href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
-      rel="stylesheet"
+      rel="stylesheet" media="print" onload="this.media='all'"
     />
+    <noscript>
+      <link
+        href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
+        rel="stylesheet"
+      />
+    </noscript>
     <title>بیز | کارگزاری تبلیغاتی</title>
   </head>
   <body>

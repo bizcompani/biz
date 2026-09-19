@@ -13,7 +13,10 @@ dist
 dist-ssr
 *.local
 
-# ===== فایل‌های حساس — هرگز پوش/کامیت نشوند =====
+# ===== فایل‌های حساس و گزارش‌های محلی — هرگز پوش/کامیت نشوند =====
+report google.html
+report google_files/
+*.lh.html
 .env
 .env.*
 !.env.example

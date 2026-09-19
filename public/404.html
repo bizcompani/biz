@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <title>بیز — در حال انتقال…</title>
+  <script>
+    // GitHub Pages SPA fallback: مثلا ‎/biz/admin‎ را به ‎/biz/#/admin‎ تبدیل می‌کند
+    // تا HashRouter مسیر را بفهمد. فقط برای ناوبری است (فایل‌های asset هش‌دارند).
+    (function () {
+      var l = window.location;
+      var base = "/biz/";
+      var path = l.pathname;
+      if (path.indexOf(base) === 0) path = path.slice(base.length);
+      path = path.replace(/^\/+|\/+$/g, "");
+      var target = l.origin + base + "#/" + path + l.search + l.hash;
+      l.replace(target);
+    })();
+  </script>
+</head>
+<body><p style="font-family:Tahoma;text-align:center">در حال انتقال…</p></body>
+</html>

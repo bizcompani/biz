@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { normalizePhone, isValidIranMobile } from "../lib/phone";
@@ -40,10 +39,7 @@ export default function Login() {
   return (
     <div className="center-wrap">
       <div className="login-grid">
-        <motion.div
-          className="card hero-copy float-anim"
-          initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-        >
+        <div className="card hero-copy float-anim anim-in">
           <span className="pill">کارگزاری تبلیغاتی</span>
           <h2>{siteName}</h2>
           <p>
@@ -52,12 +48,9 @@ export default function Login() {
             پس از ورود، می‌توانید درخواست حذف حساب خود را ثبت کنید.
           </p>
           <p style={{ fontSize: 12 }}>🔒 اتصال امن به Supabase • دسترسی‌ها با RLS محافظت می‌شود • پنل کاملاً لایو</p>
-        </motion.div>
+        </div>
 
-        <motion.form
-          className="card" onSubmit={onSubmit}
-          initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.12 }}
-        >
+        <form className="card anim-in anim-d1" onSubmit={onSubmit}>
           <h3 style={{ marginTop: 0 }}>ورود به حساب</h3>
           <p style={{ color: "var(--muted)", fontSize: 13 }}>نام کاربری = شماره تلفن شما</p>
           {err && <div className="error">{err}</div>}
@@ -75,7 +68,7 @@ export default function Login() {
           <p style={{ fontSize: 12, color: "var(--muted)" }}>
             رمز را فراموش کرده‌اید؟ با مدیر (دولوپر) تماس بگیرید. <Link to="/" style={{ color: "var(--gold-400)" }}>بیز</Link>
           </p>
-        </motion.form>
+        </form>
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ interface AuthState {
   profile: Profile | null;
   siteName: string;
   login: (phoneRaw: string, password: string) => Promise<void>;
+  loginAdmin: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
@@ -85,8 +86,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUserId(null); setPhone(null); setRole(null); setProfile(null);
   }
 
+  // لاگین ادمین (دولوپر) با ایمیل + پسورد — فقط نقش admin قبول می‌شود
+  async function loginAdmin(email: string, password: string) {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+    if (error) throw new Error("ایمیل یا رمز عبور اشتباه است.");
+    await refreshProfile();
+    const { data: { user } } = await supabase.auth.getUser();
+    let ok = false;
+    if (user) {
+      const { data } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+      ok = (data as { role?: string } | null)?.role === "admin";
+    }
+    if (!ok) {
+      await supabase.auth.signOut();
+      setUserId(null); setPhone(null); setRole(null); setProfile(null);
+      throw new Error("این حساب دسترسی ادمین ندارد.");
+    }
+  }
+
   return (
-    <AuthCtx.Provider value={{ loading, userId, phone, role, profile, siteName, login, logout, refreshProfile }}>
+    <AuthCtx.Provider value={{ loading, userId, phone, role, profile, siteName, login, loginAdmin, logout, refreshProfile }}>
       {children}
     </AuthCtx.Provider>
   );

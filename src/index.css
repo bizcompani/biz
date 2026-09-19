@@ -94,4 +94,17 @@ th { color: var(--muted); font-weight: 500; font-size: 12px; }
 .modal { width: min(560px, 100%); max-height: 90vh; overflow: auto; }
 .footer { padding: 18px 0 26px; color: var(--muted); font-size: 12px; text-align: center; }
 .float-anim { animation: floaty 5s ease-in-out infinite; }
+.anim-in { animation: fadeUp 0.5s ease both; }
+.anim-d1 { animation-delay: 0.12s; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
 @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+/* ===== پرفورمنس: حذف افکت‌های سنگین در موبایل و حالت کم‌حرکت ===== */
+@media (max-width: 640px) {
+  .card { backdrop-filter: none; }
+  .float-anim { animation: none; }
+  body { background: linear-gradient(180deg, var(--navy-950), var(--navy-900)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

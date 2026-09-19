@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { normalizePhone, isValidIranMobile } from "../lib/phone";
-import { supabase } from "../lib/supabase";
 
 export default function Login() {
   const { login, siteName } = useAuth();
@@ -20,14 +19,8 @@ export default function Login() {
     if (!password) { setErr("رمز عبور را وارد کنید."); return; }
     setBusy(true);
     try {
-      await login(p, password);
-      // نقش را از profiles بخوان و هدایت کن
-      const { data: { user } } = await supabase.auth.getUser();
-      let role: string | null = null;
-      if (user) {
-        const { data } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
-        role = (data as { role?: string } | null)?.role ?? null;
-      }
+      // login نقش را برمی‌گرداند و state را هم ست می‌کند؛ هدایت با همان یک منبع
+      const role = await login(p, password);
       nav(role === "admin" ? "/admin" : "/panel", { replace: true });
     } catch (e) {
       setErr(e instanceof Error ? e.message : "نام کاربری یا رمز عبور اشتباه است.");

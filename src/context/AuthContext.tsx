@@ -9,7 +9,7 @@ interface AuthState {
   role: Role | null;
   profile: Profile | null;
   siteName: string;
-  login: (phoneRaw: string, password: string) => Promise<void>;
+  login: (phoneRaw: string, password: string) => Promise<Role>;
   loginAdmin: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -70,7 +70,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function login(phoneRaw: string, password: string) {
+  // لاگین کلاینت با شماره+رمز. نقش را برمی‌گرداند تا صفحه لاگین
+  // با همان یک منبع هدایت کند (بدون کوئری دوم و race condition).
+  // چند بار تلاش می‌کند چون سشن گاهی با تأخیر propagate می‌شود —
+  // همین تأخیر باعث باگ «بعد از لاگین صفحه خالی می‌ماند» بود.
+  async function login(phoneRaw: string, password: string): Promise<Role> {
     const phone = normalizePhone(phoneRaw);
     // فقط تلفن + رمز؛ پیام خطای واحد برای جلوگیری از user-enumeration
     const { error } = await supabase.auth.signInWithPassword({
@@ -78,7 +82,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       password,
     });
     if (error) throw new Error("نام کاربری یا رمز عبور اشتباه است.");
-    await refreshProfile();
+    let lastErr = "";
+    for (let i = 0; i < 5; i++) {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data, error: pErr } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
+          if (!pErr && data) {
+            const prof = data as Profile;
+            setUserId(user.id);
+            setProfile(prof);
+            setRole(prof.role);
+            setPhone(prof.phone);
+            return prof.role;
+          }
+          lastErr = pErr?.message ?? "profile-missing";
+        } else {
+          lastErr = "no-user";
+        }
+      } catch (e) {
+        lastErr = e instanceof Error ? e.message : "unknown";
+      }
+      await new Promise((r) => setTimeout(r, 400));
+    }
+    await supabase.auth.signOut();
+    throw new Error(`ورود انجام شد ولی پروفایل یافت نشد (${lastErr}). با ادمین تماس بگیرید.`);
   }
 
   async function logout() {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
-import { normalizePhone, isValidIranMobile, isValidNationalCode } from "../lib/phone";
+import { normalizePhone, isValidIranMobile } from "../lib/phone";
 
 const SUCCESS_MSG = "اطلاعات پس از بررسی توسط ادمین به شما اطلاع‌رسانی می‌شود.";
 
@@ -56,7 +56,8 @@ export default function ClientPanel() {
     setErr(null); setInfo(null);
     const nc = normalizePhone(nationalCode);
     const mob = normalizePhone(mobile || phone || "");
-    if (!isValidNationalCode(nc)) { setErr("کد ملی معتبر نیست."); return; }
+    // بدون راستی‌آزمایی کد ملی و بدون کپچا؛ تطبیق با اسناد کتبی بر عهده ادمین است
+    if (!/^\d{10}$/.test(nc)) { setErr("کد ملی باید ۱۰ رقم باشد."); return; }
     if (!fullName.trim() || fullName.trim().length < 3) { setErr("نام کامل را وارد کنید."); return; }
     if (!isValidIranMobile(mob)) { setErr("شماره تلفن معتبر نیست."); return; }
     if (!fatherName.trim()) { setErr("نام پدر را وارد کنید."); return; }
